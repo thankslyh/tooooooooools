@@ -67,13 +67,3 @@ pub async fn get_car_info() -> CarInfo {
   println!("res:{:#?}", res);
   res.data
 }
-
-#[cfg(test)]
-mod tests {
-  use crate::pdl_qianggou::get_car_info::get_car_info;
-
-  #[tokio::test]
-  async fn test_car_info() {
-    get_car_info().await;
-  }
-}

@@ -59,13 +59,3 @@ pub async fn add_shop_car(sku: i64) -> anyhow::Result<String> {
         .await?;
     Ok(res)
 }
-
-#[cfg(test)]
-mod tests {
-    use crate::pdl_qianggou::add_shop_car::add_shop_car;
-
-    #[tokio::test]
-    async fn test_shop() {
-        add_shop_car(195697202).await;
-    }
-}

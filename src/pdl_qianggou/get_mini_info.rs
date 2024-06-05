@@ -18,7 +18,7 @@ pub struct MiniInfo {
     #[serde(rename = "moduleList")]
     module_list: Vec<Module>,
 }
-pub async fn get_mini_info(addr: Address, car_info: CarInfo) -> String {
+pub async fn get_mini_info(addr: Address, car_info: CarInfo) -> (String, String) {
     let req = Client::builder().build().unwrap();
     let trace_id = Local::now().timestamp();
     let param = json!({
@@ -106,21 +106,8 @@ pub async fn get_mini_info(addr: Address, car_info: CarInfo) -> String {
   let ship = res.data.module_list.iter().find(|&m| m.module_name.eq("shipment")).unwrap().data.clone();
   let ship_time = ship.as_object().unwrap().get("shipTime").unwrap();
   let current_ship_time_item = ship_time.as_object().unwrap().get("currentShipTimeItem").unwrap().as_array().unwrap();
+  let date = current_ship_time_item.first().unwrap().as_object().unwrap().get("date").unwrap().as_str().unwrap().to_string();
   let target = current_ship_time_item.first().unwrap().as_object().unwrap().get("timeList_").unwrap().as_array().unwrap().first();
   let display_value = target.unwrap().as_object().unwrap().get("displayValue").unwrap().as_str().unwrap().to_string();
-  display_value
-}
-
-#[cfg(test)]
-mod test {
-  use crate::pdl_qianggou::get_address::{Address, get_address};
-  use crate::pdl_qianggou::get_car_info::get_car_info;
-  use crate::pdl_qianggou::get_mini_info::get_mini_info;
-
-  #[tokio::test]
-  async fn test_min_info() {
-    let addr = get_address().await;
-    let car_info = get_car_info().await;
-    get_mini_info(addr, car_info).await;
-  }
+  (date, display_value)
 }

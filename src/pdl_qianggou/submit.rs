@@ -1,17 +1,19 @@
 extern crate url;
 
-use std::collections::HashMap;
-use std::ops::Add;
-use std::time::{Duration, SystemTime};
-use chrono::{Datelike, DateTime, Local, Timelike};
-use reqwest::Client;
-use reqwest::header::{HeaderMap, HeaderValue};
-use serde::{Deserialize, Serialize};
-use serde_json::json;
-use crate::pdl_qianggou::{create_d_track_data, create_headers, LOGIN_ID, SESSION_ID, STORE_ID, TICKET_NAME, TOKEN};
 use crate::pdl_qianggou::get_address::Address;
 use crate::pdl_qianggou::get_car_info::CarInfo;
 use crate::pdl_qianggou::get_mini_info::get_mini_info;
+use crate::pdl_qianggou::{
+    create_d_track_data, create_headers, LOGIN_ID, SESSION_ID, STORE_ID, TICKET_NAME, TOKEN,
+};
+use chrono::{DateTime, Datelike, Local, Timelike};
+use reqwest::header::{HeaderMap, HeaderValue};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use serde_json::json;
+use std::collections::HashMap;
+use std::ops::Add;
+use std::time::{Duration, SystemTime};
 
 fn create_time() -> (String, String, String) {
     let get_a = |x: u32| -> u32 {
@@ -19,11 +21,16 @@ fn create_time() -> (String, String, String) {
         x - a
     };
     let mut start_time = Local::now().add(Duration::from_secs(30 * 60));
-    let day = format!("{}-{}-{}", start_time.year(), start_time.month(), start_time.day());
+    let day = format!(
+        "{}-{}-{}",
+        start_time.year(),
+        start_time.month(),
+        start_time.day()
+    );
     if start_time.hour() < 10 {
         let start_time = "10:00".to_string();
         let end_time = "10:30".to_string();
-        return (day, start_time, end_time)
+        return (day, start_time, end_time);
     }
     let end_time = start_time.add(Duration::from_secs(30 * 60));
     let start_time = format!("{}:{}", start_time.hour(), get_a(start_time.minute()));
@@ -31,8 +38,8 @@ fn create_time() -> (String, String, String) {
     (day, start_time, end_time)
 }
 
-fn create_submit_param(addr: Address, car_info: CarInfo, ship_time: String) -> String {
-    let date = create_time();
+fn create_submit_param(addr: Address, car_info: CarInfo, ship_time: (String, String)) -> String {
+    // let date = create_time();
     json!({
   "terminal": "devtools",
   "platform": "9",
@@ -58,8 +65,8 @@ fn create_submit_param(addr: Address, car_info: CarInfo, ship_time: String) -> S
   },
   "shipmentContentStr": {
     "shipmentType": 1,
-    "shipmentDate": date.0,
-    "shipmentTime": ship_time,
+    "shipmentDate": ship_time.0,
+    "shipmentTime": ship_time.1,
     "shipmentOption": 6000
   },
   "remark": null,
@@ -112,7 +119,8 @@ pub async fn submit(addr: Address, car_info: CarInfo) {
     form.insert("d_track_data", d_track_str);
     // println!("{:#?}", params);
     println!("{:#?}", headers);
-    let res = req.post("https://trade.dmall-os.cn/trade/gate/mini/submit")
+    let res = req
+        .post("https://trade.dmall-os.cn/trade/gate/mini/submit")
         .headers(headers)
         .form(&form)
         .send()
@@ -128,25 +136,24 @@ pub async fn submit(addr: Address, car_info: CarInfo) {
 
 #[cfg(test)]
 mod tests {
+    use crate::pdl_qianggou::get_mini_info::get_mini_info;
+    use crate::pdl_qianggou::submit::{create_submit_param, create_time, submit};
+    use crate::pdl_qianggou::{add_shop_car, get_address, get_car_info, submit, LOGIN_ID};
+    use chrono::{Datelike, Local, Timelike, Utc};
     use std::ops::Add;
     use std::time::{Duration, SystemTime};
-    use chrono::{Datelike, Local, Timelike, Utc};
-    use crate::pdl_qianggou::{add_shop_car, get_address, get_car_info, submit};
-    use crate::pdl_qianggou::get_mini_info::get_mini_info;
-    use crate::pdl_qianggou::submit::{create_time, submit};
 
     #[tokio::test]
     async fn test_time() {
         // 第一步：添加购物车
         println!("开始向购物车添加商品......");
-        add_shop_car::add_shop_car(199547762).await.unwrap();
-        add_shop_car::add_shop_car(199547762).await.unwrap();
+        // 精酿啤酒 sku
+        add_shop_car::add_shop_car(213336762).await.unwrap();
+        add_shop_car::add_shop_car(213336762).await.unwrap();
         println!("获取购物车详情......");
         let car_info = get_car_info::get_car_info().await;
         println!("获取地址信息......");
         let addr = get_address::get_address().await;
-        println!("car_info:{:#?}", car_info);
-        println!("addr:{:#?}", addr);
         println!("开始下单......");
         submit::submit(addr, car_info).await
         // submit::submit().await
