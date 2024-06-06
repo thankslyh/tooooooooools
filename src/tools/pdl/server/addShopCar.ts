@@ -1,6 +1,6 @@
 import Axios from 'axios';
-import qs from 'qs';
-import config from '../config.json';
+import * as qs from 'qs';
+import config from '../config';
 import { createDTrackData, createHeaders } from '../util';
 
 export default function addShopCar(sku: number): Promise<any> {

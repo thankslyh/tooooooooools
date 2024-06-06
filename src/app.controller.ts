@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/address')
+  async getAddress(): Promise<string> {
+    return this.appService.getAddress();
+  }
 }

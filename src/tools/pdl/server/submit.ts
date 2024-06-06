@@ -1,28 +1,32 @@
 import Axios from 'axios';
-import qs from 'qs';
-import config from '../config.json';
+import * as qs from 'qs';
+import config from '../config';
 import { createDTrackData, createHeaders } from '../util';
 import { Address } from './getAddress';
 import { CarInfo } from './getCarInfo';
 import { getMiniInfo, ShipTime } from './getMiniInfo';
 
 export async function submit(addr: Address, carInfo: CarInfo): Promise<any> {
-  const shipTime = await getMiniInfo(addr, carInfo);
-  const param = createSubmitParam(addr, carInfo, shipTime);
-  const dTrackData = createDTrackData();
-  const headers = createHeaders('trade.dmall-os.cn');
-  const data = qs.stringify({
-    param,
-    d_track_data: dTrackData,
-  });
-  const res = await Axios.post(
-    `https://trade.dmall-os.cn/trade/gate/mini/submit`,
-    data,
-    {
-      headers,
-    },
-  );
-  return res;
+  try {
+    const shipTime = await getMiniInfo(addr, carInfo);
+    const param = createSubmitParam(addr, carInfo, shipTime);
+    const dTrackData = createDTrackData();
+    const headers = createHeaders('trade.dmall-os.cn');
+    const data = qs.stringify({
+      param,
+      d_track_data: dTrackData,
+    });
+    const res = await Axios.post(
+      `https://trade.dmall-os.cn/trade/gate/mini/submit`,
+      data,
+      {
+        headers,
+      },
+    );
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export function createSubmitParam(
