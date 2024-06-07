@@ -22,7 +22,7 @@ export class TasksService {
   //   this.logger.debug('Called when the current second is 1');
   // }
 
-  @Cron('0 30 09 * * *')
+  @Cron('0 27 09 * * *')
   async handleCron() {
     const res = await sign();
     this.logger.debug(JSON.stringify(res.data));
