@@ -16,7 +16,7 @@ export interface Address {
   addressLocated: string;
 }
 
-export default async function getAddress(): Promise<Address> {
+export default async function getAddress(cnf: PdlConfig): Promise<Address> {
   try {
     const param = JSON.stringify({
       terminal: 'devtools',
@@ -40,12 +40,12 @@ export default async function getAddress(): Promise<Address> {
       ],
       entryType: 'o2o',
     });
-    const dTrackData = createDTrackData();
+    const dTrackData = createDTrackData(cnf);
     const data = qs.stringify({
       param,
       d_track_data: dTrackData,
     });
-    const headers = createHeaders('trading.dmall-os.cn');
+    const headers = createHeaders(cnf, 'trading.dmall-os.cn');
     const res = await Axios.post<any, AxiosResponse<BaseData<Array<Address>>>>(
       'https://trading.dmall-os.cn/address/list',
       data,

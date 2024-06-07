@@ -3,7 +3,7 @@ import * as qs from 'qs';
 import config from '../config';
 import { createDTrackData, createHeaders } from '../util';
 
-export default function addShopCar(sku: number): Promise<any> {
+export default function addShopCar(cnf: PdlConfig, sku: number): Promise<any> {
   const trace_id = Date.now();
   const param = JSON.stringify({
     terminal: 'devtools',
@@ -43,12 +43,12 @@ export default function addShopCar(sku: number): Promise<any> {
     markCartFront: true,
     freeVersion: '1.9.2',
   });
-  const dTrackData = createDTrackData();
+  const dTrackData = createDTrackData(cnf);
   const data = qs.stringify({
     param,
     d_track_data: dTrackData,
   });
-  const headers = createHeaders('trading.dmall-os.cn');
+  const headers = createHeaders(cnf, 'trading.dmall-os.cn');
   return Axios.post('https://trading.dmall-os.cn/cartOnline/add', data, {
     headers,
   });

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import getAddress from './tools/pdl/server/getAddress';
+import { readConfig } from './tools/pdl/util';
 
 @Injectable()
 export class AppService {
@@ -8,7 +8,7 @@ export class AppService {
   }
 
   async getAddress(): Promise<string> {
-    await getAddress();
+    await readConfig();
     return 'Hello address!';
   }
 }

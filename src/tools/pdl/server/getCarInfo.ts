@@ -8,7 +8,7 @@ export interface CarInfo {
   discountPriceForUser: number;
   checkedSumWithoutGift: number;
 }
-export async function getCarInfo(): Promise<any> {
+export async function getCarInfo(cnf: PdlConfig): Promise<any> {
   try {
     const traceId = Date.now();
     const param = JSON.stringify({
@@ -40,12 +40,12 @@ export async function getCarInfo(): Promise<any> {
       commonAutoAddBuy: true,
       storeGroupList: ['67242-668602', '67882-928002', '69522-928042'],
     });
-    const dTrackData = createDTrackData();
+    const dTrackData = createDTrackData(cnf);
     const data = qs.stringify({
       param,
       d_track_data: dTrackData,
     });
-    const headers = createHeaders('trading.dmall-os.cn');
+    const headers = createHeaders(cnf, 'trading.dmall-os.cn');
     const res = await Axios.post<AxiosResponse<BaseData<CarInfo>>>(
       'https://trading.dmall-os.cn/cartOnline/info',
       data,

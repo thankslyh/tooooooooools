@@ -6,12 +6,16 @@ import { Address } from './getAddress';
 import { CarInfo } from './getCarInfo';
 import { getMiniInfo, ShipTime } from './getMiniInfo';
 
-export async function submit(addr: Address, carInfo: CarInfo): Promise<any> {
+export async function submit(
+  cnf: PdlConfig,
+  addr: Address,
+  carInfo: CarInfo,
+): Promise<any> {
   try {
-    const shipTime = await getMiniInfo(addr, carInfo);
+    const shipTime = await getMiniInfo(cnf, addr, carInfo);
     const param = createSubmitParam(addr, carInfo, shipTime);
-    const dTrackData = createDTrackData();
-    const headers = createHeaders('trade.dmall-os.cn');
+    const dTrackData = createDTrackData(cnf);
+    const headers = createHeaders(cnf, 'trade.dmall-os.cn');
     const data = qs.stringify({
       param,
       d_track_data: dTrackData,

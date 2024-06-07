@@ -19,6 +19,7 @@ export interface ShipTime {
   displayValue: string;
 }
 export async function getMiniInfo(
+  cnf: PdlConfig,
   addr: Address,
   carInfo: CarInfo,
 ): Promise<ShipTime> {
@@ -91,12 +92,12 @@ export async function getMiniInfo(
       },
       useAppAddressStyle: true,
     });
-    const dTrackData = createDTrackData();
+    const dTrackData = createDTrackData(cnf);
     const data = qs.stringify({
       param,
       d_track_data: dTrackData,
     });
-    const headers = createHeaders('trade.dmall-os.cn');
+    const headers = createHeaders(cnf, 'trade.dmall-os.cn');
     const res = await Axios.post<AxiosResponse<BaseData<MiniInfo>>>(
       'https://trade.dmall-os.cn/trade/gate/mini/info',
       data,
