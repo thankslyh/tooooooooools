@@ -14,4 +14,9 @@ export class AppController {
   async getAddress(): Promise<string> {
     return this.appService.getAddress();
   }
+
+  @Get('/pusher')
+  async getPusher(): Promise<string> {
+    return this.appService.getPusher();
+  }
 }

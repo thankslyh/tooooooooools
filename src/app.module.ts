@@ -7,7 +7,14 @@ import { TasksService } from './services/task.service';
 import { PdlModule } from './pdl/pdl.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ScheduleModule.forRoot(), PdlModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }),
+    ScheduleModule.forRoot(),
+    PdlModule,
+  ],
   controllers: [AppController],
   providers: [AppService, TasksService],
 })

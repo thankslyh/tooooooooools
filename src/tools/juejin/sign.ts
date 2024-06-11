@@ -2,7 +2,7 @@ import Axios from 'axios';
 
 export default async function sign() {
   const data = JSON.stringify({});
-  return Axios.post(
+  return Axios.post<{ err_no: number; err_msg: string }>(
     'https://api.juejin.cn/growth_api/v1/check_in?aid=2608&uuid=7251940434845959732&spider=0',
     data,
     {
