@@ -22,6 +22,7 @@ FROM node:20.14.0-alpine3.20 as production-stage
 
 COPY --from=build-stage /app/dist /app
 COPY --from=build-stage /app/package.json /app/package.json
+COPY --from=build-stage /app/.env /app/.env
 
 WORKDIR /app
 
