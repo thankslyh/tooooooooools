@@ -25,7 +25,7 @@ export class TasksService {
   //   this.logger.debug('Called when the current second is 1');
   // }
 
-  @Cron('04 11 * * *')
+  @Cron('30 08 * * *')
   async handleCron() {
     this.logger.debug('执行定时任务...........');
     try {
