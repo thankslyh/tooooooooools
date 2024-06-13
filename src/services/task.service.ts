@@ -25,6 +25,7 @@ export class TasksService {
 
   @Cron('0 27 09 * * *')
   async handleCron() {
+    this.logger.debug('执行定时任务...........');
     const res = await sign();
     fangtangPusher(
       `掘金签到：${+res.data.err_no === 0 ? '成功' : '失败'}`,
