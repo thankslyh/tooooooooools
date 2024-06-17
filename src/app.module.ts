@@ -10,6 +10,8 @@ import { TasksService } from './services/task.service';
 import { PdlModule } from './pdl/pdl.module';
 import { DdDamoclesModule } from './dd-damocles/dd-damocles.module';
 import { DdDamocle } from './dd-damocles/entities/dd-damocle.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { LoginGuard } from './auth.guard';
 
 @Module({
   imports: [
@@ -53,6 +55,13 @@ import { DdDamocle } from './dd-damocles/entities/dd-damocle.entity';
     DdDamoclesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TasksService],
+  providers: [
+    AppService,
+    TasksService,
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard,
+    },
+  ],
 })
 export class AppModule {}

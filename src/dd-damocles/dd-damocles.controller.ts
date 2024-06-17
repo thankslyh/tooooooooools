@@ -3,6 +3,7 @@ import { DdDamoclesService } from './dd-damocles.service';
 import { CreateDdDamocleDto, LoginDto } from './dto/create-dd-damocle.dto';
 import { UpdateDdDamocleDto } from './dto/update-dd-damocle.dto';
 import { JwtService } from '@nestjs/jwt';
+import { RequireLogin } from 'src/custom.decorator';
 
 @Controller('dd-damocles')
 export class DdDamoclesController {
@@ -12,12 +13,13 @@ export class DdDamoclesController {
   private jwtService: JwtService;
 
   @Post('login')
+  @RequireLogin()
   async login(@Body() createDdDamocleDto: LoginDto) {
     const user = await this.ddDamoclesService.login(createDdDamocleDto);
 
     const token = this.jwtService.sign(
       {
-        id: user.id,
+        userId: user.id,
         phone: user.phone,
         email: user.email,
         password: user.password,
