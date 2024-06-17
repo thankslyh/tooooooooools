@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({
   name: 'dd_damocle_user',
@@ -20,13 +26,17 @@ export class DdDamocle {
   password: string;
 
   @Column({
-    type: 'datetime',
+    default: '',
+    type: 'varchar',
+  })
+  email: string;
+
+  @CreateDateColumn({
     nullable: false,
   })
   createTime: Date;
 
-  @Column({
-    type: 'datetime',
+  @UpdateDateColumn({
     nullable: false,
   })
   updateTime: Date;

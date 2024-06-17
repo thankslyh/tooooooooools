@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,23 +17,36 @@ import { DdDamocle } from './dd-damocles/entities/dd-damocle.entity';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'Li!21577',
-      database: 'damocles',
-      synchronize: true,
-      logging: true,
-      entities: [DdDamocle],
-      migrations: [],
-      subscribers: [],
-      poolSize: 10,
-      connectorPackage: 'mysql2',
-      extra: {
-        authPlugins: 'sha256_password',
+    TypeOrmModule.forRootAsync({
+      useFactory(cnf: ConfigService) {
+        return {
+          type: 'mysql',
+          host: cnf.get('DB_HOST'),
+          port: cnf.get('DB_PORT'),
+          username: cnf.get('DB_USER'),
+          password: cnf.get('DB_PASSWORD'),
+          database: cnf.get('DB_NAME'),
+          synchronize: true,
+          logging: true,
+          entities: [DdDamocle],
+          migrations: [],
+          subscribers: [],
+          poolSize: 10,
+          connectorPackage: 'mysql2',
+          extra: {
+            authPlugins: 'sha256_password',
+          },
+        };
       },
+      inject: [ConfigService],
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      useFactory: (cnf: ConfigService) => ({
+        secret: cnf.get('JWT_SECRET'),
+        signOptions: { expiresIn: '7d' },
+      }),
+      inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
     PdlModule,
