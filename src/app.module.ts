@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TasksService } from './services/task.service';
 import { PdlModule } from './pdl/pdl.module';
+import { XuanyuanModule } from './xuanyuan/xuanyuan.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PdlModule } from './pdl/pdl.module';
     }),
     ScheduleModule.forRoot(),
     PdlModule,
+    XuanyuanModule,
   ],
   controllers: [AppController],
   providers: [AppService, TasksService],
