@@ -43,12 +43,8 @@ export class DdDamoclesService {
     return '用户创建成功';
   }
 
-  findAll() {
-    return `This action returns all ddDamocles`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} ddDamocle`;
+  sendDdVerifyCode(phone: string) {
+    // 操作设备
   }
 
   async findByPhone(phone: string) {
